@@ -3,13 +3,13 @@ swagger: "2.0"
 info:
   version: "0.0.1"
   title: "Twilio Speech to Text sample Swagger"
-host: "localhost:10010"
+host: "localhost"
 basePath: "/"
 schemes:
 - "http"
 - "https"
 consumes:
-- "multipart/form-data"
+- "application/x-www-form-urlencoded"
 produces:
 - "application/xml"
 paths:
@@ -17,7 +17,13 @@ paths:
     get:
       description: "Returns the Initial Request Twiml to ask customer to talk"
       operationId: "call_handler"
-      parameters: []
+      parameters: 
+      - name: "CallSid"
+        in: "query"
+        description: "CallSid"
+        required: true
+        type: "string"
+        minimum: 1
       responses:
         200:
           description: "Call Success"
@@ -25,13 +31,22 @@ paths:
           description: "Error"
           schema:
             $ref: "#/definitions/ErrorResponse"
-      x-swagger-router-controller: "Default"
-    x-swagger-router-controller: "twiliostt"
+      x-swagger-router-controller: "twiliostt"
   /action:
-    get:
+    post:
       description: "Returns the Action to be taken based on the user's speech"
       operationId: "action_handler"
-      parameters: []
+      parameters: 
+      - in: "body"
+        name: "TwilioResult"
+        description: "SpeechResult"
+        schema:
+          type: object
+          properties:
+            SpeechResult:
+              type: "string"
+            Confidence:
+              type: "string"
       responses:
         200:
           description: "Action Success"
@@ -39,8 +54,7 @@ paths:
           description: "Error"
           schema:
             $ref: "#/definitions/ErrorResponse"
-      x-swagger-router-controller: "Default"
-    x-swagger-router-controller: "twiliostt"
+      x-swagger-router-controller: "twiliostt"
   /partial:
     get:
       description: "Returns the Action to be taken based on Partial Real Time Recognitions"
@@ -53,8 +67,7 @@ paths:
           description: "Error"
           schema:
             $ref: "#/definitions/ErrorResponse"
-      x-swagger-router-controller: "Default"
-    x-swagger-router-controller: "twiliostt"
+      x-swagger-router-controller: "twiliostt"
   /swagger:
     x-swagger-pipe: "swagger_raw"
 definitions:
