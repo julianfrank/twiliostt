@@ -1,0 +1,79 @@
+---
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: "Twilio Speech to Text sample Swagger"
+host: "localhost"
+basePath: "/"
+schemes:
+- "http"
+- "https"
+consumes:
+- "application/x-www-form-urlencoded"
+produces:
+- "application/xml"
+paths:
+  /call:
+    get:
+      description: "Returns the Initial Request Twiml to ask customer to talk"
+      operationId: "call_handler"
+      parameters: 
+      - name: "CallSid"
+        in: "query"
+        description: "CallSid"
+        required: true
+        type: "string"
+        minimum: 1
+      responses:
+        200:
+          description: "Call Success"
+        default:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      x-swagger-router-controller: "twiliostt"
+  /action:
+    post:
+      description: "Returns the Action to be taken based on the user's speech"
+      operationId: "action_handler"
+      parameters: 
+      - in: "body"
+        name: "TwilioResult"
+        description: "SpeechResult"
+        schema:
+          type: object
+          properties:
+            SpeechResult:
+              type: "string"
+            Confidence:
+              type: "string"
+      responses:
+        200:
+          description: "Action Success"
+        default:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      x-swagger-router-controller: "twiliostt"
+  /partial:
+    get:
+      description: "Returns the Action to be taken based on Partial Real Time Recognitions"
+      operationId: "partial_handler"
+      parameters: []
+      responses:
+        200:
+          description: "Partial Success"
+        default:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      x-swagger-router-controller: "twiliostt"
+  /swagger:
+    x-swagger-pipe: "swagger_raw"
+definitions:
+  ErrorResponse:
+    required:
+    - "message"
+    properties:
+      message:
+        type: "string"
